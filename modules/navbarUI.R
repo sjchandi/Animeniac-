@@ -1,7 +1,7 @@
 navbarUI <- function(id, currentPage) {
   ns <- NS(id)  
   
-  tags$nav(class = "border-b-2 border-orange-600 w-full h-24 flex items-center justify-between",
+  tags$nav(class = "border-b-4 border-orange-600 w-full h-24 flex items-center justify-between",
            
    # Logo 
    tags$a(class = "flex items-center h-full ml-8",

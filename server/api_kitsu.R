@@ -46,30 +46,35 @@ fetch_Anime_in_LandingPage = function(limit = 10, offset = 0){
 }
 
 
-#Will fetch the info of selected anime (NOT FINISHED)
+#Will fetch the info of selected anime 
 fetch_Anime_Info <- function(id){
   
   url <- paste0("https://kitsu.io/api/edge/anime/", id, "?include=genres")
-
+  
   resp <- request(url) %>% req_perform()
-  data_json <- resp %>% resp_body_json(simplifyVector = TRUE)
+  data_json <- resp %>% resp_body_json(simplifyVector = FALSE)
   
-  anime_data <- data_json$data
+  anime_attr <- data_json$data$attributes
   
-  # Extract genres from included
-  genres <- ""
-  if(!is.null(data_json$included)){
-    genres <- sapply(data_json$included, function(x) x$attributes$name)
-    genres <- paste(genres, collapse = ", ")
+  # Helper to safely extract values
+  safe <- function(x) if (is.null(x) || length(x) == 0) NA else x
+  
+  # Extract genres safely
+  genre_names <- NA
+  if (!is.null(data_json$included) && length(data_json$included) > 0) {
+    genre_names <- sapply(data_json$included, function(x) x$attributes$name)
+    genre_names <- paste(genre_names, collapse = ", ")
   }
   
-  SelectedResult <- data.frame(
-    title = anime_data$attributes$titles$en_jp,
-    synopsis = anime_data$attributes$synopsis,
-    youtube = anime_data$attributes$youtubeVideoId,
-    genre = genres,
+  data.frame(
+    id = safe(id),
+    title = safe(anime_attr$canonicalTitle),
+    synopsis = safe(anime_attr$synopsis),
+    youtube = safe(anime_attr$youtubeVideoId),
+    poster = safe(anime_attr$posterImage$large),
+    category = safe(genre_names),
+    airdate = safe(anime_attr$startDate),
     stringsAsFactors = FALSE
   )
-  
-  return(SelectedResult)
 }
+
