@@ -19,6 +19,8 @@ animeModalUI <- function(id, title, synopsis, youtube, poster, category, airdate
           title
         ),
         
+        cat("YouTube ID being used:", youtube, "\n"),
+        
         # YouTube Trailer 
         if (!is.null(youtube) && youtube != "") {
           tags$div(
@@ -32,6 +34,7 @@ animeModalUI <- function(id, title, synopsis, youtube, poster, category, airdate
             )
           )
         },
+        
         
         # Poster + Details section
         tags$div(
